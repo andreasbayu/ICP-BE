@@ -1,7 +1,7 @@
 version: '2.4'
 services:
   ors-app:
-    container_name: orsjogjah
+    container_name: orsjogja
     ports:
       - 8080:8080
       - 9001:9001
