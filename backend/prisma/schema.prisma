@@ -1,0 +1,70 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String       @id @default(auto()) @map("_id") @db.ObjectId
+  email      String       @unique
+  username   String       @unique
+  password   String
+  name       String?
+  role       String?      @default("kurir")
+  pengiriman Pengiriman[]
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+}
+
+model Kantor {
+  id         String       @id @default(auto()) @map("_id") @db.ObjectId
+  kode       String?      @default("")
+  namaKantor String
+  alamat     String
+  koordinat  Koordinat
+  Pengiriman Pengiriman[]
+}
+
+model Barang {
+  id           String      @id @default(auto()) @map("_id") @db.ObjectId
+  kode         String
+  namaPenerima String
+  alamat       String
+  koordinat    Koordinat
+  selesai      Boolean     @default(false)
+  diterimaOleh String?     @default("")
+  pengiriman   Pengiriman? @relation(references: [id], fields: [pengirimanId])
+  pengirimanId String?     @db.ObjectId
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+}
+
+model Pengiriman {
+  id               String   @id @default(auto()) @map("_id") @db.ObjectId
+  kode             String   @unique
+  kantor           Kantor?  @relation(fields: [kantorId], references: [id])
+  kurir            User?    @relation(fields: [userId], references: [id])
+  barang           Barang[]
+  metrikJarak      Json?
+  rute             Int[]
+  directions       String?
+  urutanKodeBarang String[]
+  cost             Int?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  kantorId         String?  @db.ObjectId
+  userId           String?  @db.ObjectId
+}
+
+// Types
+type Koordinat {
+  longitude String
+  latitude  String
+}
+

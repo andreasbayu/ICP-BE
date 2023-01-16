@@ -1,0 +1,42 @@
+version: '2.4'
+services:
+  ors-app:
+    container_name: orsjogjah
+    ports:
+      - 8080:8080
+      - 9001:9001
+    expose:
+      - 8080
+      - 9001
+    image: openrouteservice-yogyakarta1/openrouteservice
+    build:
+      context: ../
+      args:
+        ORS_CONFIG: ./docker/conf/ors-config.json
+        OSM_FILE: ./docker/yogyakarta.pbf
+    user: "${ORS_UID:-0}:${ORS_GID:-0}"
+    networks:
+      - server
+    volumes:
+      - ./graphs:/ors-core/data/graphs
+      - ./elevation_cache:/ors-core/data/elevation_cache
+      - ./logs/ors:/var/log/ors
+      - ./logs/tomcat:/usr/local/tomcat/logs
+      - ./conf:/ors-conf
+      - ./yogyakarta.pbf:/ors-core/data/osm_file.pbf
+    environment:
+      - BUILD_GRAPHS=True  # Forces the container to rebuild the graphs, e.g. when PBF is changed
+      - "JAVA_OPTS=-Djava.awt.headless=true -server -XX:TargetSurvivorRatio=75 -XX:SurvivorRatio=64 -XX:MaxTenuringThreshold=3 -XX:+UseG1GC -XX:+ScavengeBeforeFullGC -XX:ParallelGCThreads=4 -Xmx2g -Xmx2g"
+      - "CATALINA_OPTS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=9001 -Dcom.sun.management.jmxremote.rmi.port=9001 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=localhost"
+  backend:
+    container_name: node_app
+    ports: 
+      - 3000:3000
+    build: ../../backend
+    volumes:
+      - ../../backend:/app
+    networks:
+      - server
+networks:
+  server: 
+    driver: bridge
