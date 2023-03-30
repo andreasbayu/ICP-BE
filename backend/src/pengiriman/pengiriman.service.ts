@@ -66,7 +66,7 @@ export class PengirimanService {
     // const openRouteServiceBaseURL =
     //   'https://api.openrouteservice.org/v2/directions/driving-car?api_key=5b3ce3597851110001cf62486e28e8e12a3449528def1afa9a4401df&';
     const openRouteServiceBaseURL =
-      'http://0.0.0.0:8080/ors/v2/directions/driving-car?&';
+      'http://0.0.0.0:8080/ors/v2/directions/cycling-regular?&';
     nextTick(async () => {
       // const get = await axios.get(openRouteServiceBaseURL);
       const getBarang = getPengiriman.barang;
@@ -145,7 +145,7 @@ export class PengirimanService {
       // hapus id kantor
       urutanTujuan.shift();
 
-      const updatePengiriman = await this.prisma.pengiriman.update({
+      await this.prisma.pengiriman.update({
         where: {
           id,
         },

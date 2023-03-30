@@ -92,8 +92,10 @@
         "profiles": {
           "active": [
             "car",
-            "bike",
-            "e-bike"
+            "bike-road",
+            "bike-electric",
+            "hgv",
+            "bike-regular"
           ],
           "default_params": {
             "encoder_flags_size": 8,

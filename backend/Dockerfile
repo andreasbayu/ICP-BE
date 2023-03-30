@@ -20,6 +20,7 @@ ENV DATABASE_URL="mongodb+srv://samtron:sandalcepit@proyekinformatika.tkatqm7.mo
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/modules ./modules
 
 EXPOSE 3000
-CMD [ "npm", "run", "start:prod" ]
+CMD ["npm", "run", "start:prod"]
